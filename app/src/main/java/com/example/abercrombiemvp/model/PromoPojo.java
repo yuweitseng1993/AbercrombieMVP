@@ -6,7 +6,7 @@ public class PromoPojo {
     public String title;
     public String backgroundImage;
     public List<ContentPojo> content;
-    public String pomoMessage;
+    public String promoMessage;
     public String topDescription;
-//    public String bottomDescription;
+    public String bottomDescription;
 }

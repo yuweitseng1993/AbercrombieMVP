@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    android:id="@+id/cv_promo_card"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -28,7 +30,8 @@
             android:layout_marginTop="2dp"
             android:layout_marginBottom="2dp"
             android:textSize="13sp"
-            tools:text="topDescription" />
+            tools:text="topDescription"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/tv_title"
@@ -51,18 +54,51 @@
             android:layout_marginTop="2dp"
             android:layout_marginBottom="2dp"
             android:textSize="11sp"
-            tools:text="promoMessage" />
+            tools:text="promoMessage"
+            android:visibility="gone"/>
 
-        <TextView
-            android:id="@+id/tv_btm_description"
-            android:layout_width="wrap_content"
+
+        <LinearLayout
+            android:id="@+id/ll_btm_description"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:layout_below="@id/tv_promo_msg"
-            android:layout_centerHorizontal="true"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:textSize="13sp"
-            tools:text="bottomDescription" />
+            android:gravity="center"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_btm_description_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:gravity="center"
+                tools:text="*In stores online. Applies to equal or lesser value item. Single items priced as marked. " />
+
+            <TextView
+                android:id="@+id/tv_btm_description_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:textSize="13sp"
+                tools:text="Exclusions apply. See Details"
+                 />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_content_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@id/ll_btm_description"
+            android:layout_margin="16dp"
+            android:gravity="center"
+            android:visibility="gone">
+
+        </LinearLayout>
+
 
     </RelativeLayout>
 

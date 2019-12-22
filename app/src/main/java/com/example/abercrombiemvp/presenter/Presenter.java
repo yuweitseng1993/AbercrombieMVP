@@ -1,24 +1,36 @@
 package com.example.abercrombiemvp.presenter;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.abercrombiemvp.model.ApiInterface;
 import com.example.abercrombiemvp.model.PromoPojo;
 import com.example.abercrombiemvp.model.ResultPojo;
+import com.example.abercrombiemvp.view.MainActivity;
 import com.example.abercrombiemvp.view.ViewContract;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.json.JSONArray;
+
+import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Presenter implements PresenterContract {
     private static final String TAG = "Presenter";
     private ViewContract view;
+    private RequestQueue mRequestQueue;
+    private String url = "https://www.abercrombie.com/anf/nativeapp/qa/codetest/codeTest_exploreData.json";
+    private Gson gson;
 
     @Override
     public void onBindView(ViewContract view) {
@@ -31,47 +43,38 @@ public class Presenter implements PresenterContract {
     }
 
     @Override
-    public void retrofitGetPromotion() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://www.abercrombie.com/anf/nativeapp/qa/codetest/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-//        retrofit.create(ApiInterface.class).getPromotions().enqueue(new Callback<ResultPojo>() {
-//            @Override
-//            public void onResponse(Call<ResultPojo> call, Response<ResultPojo> response) {
-//                if(response.isSuccessful()){
-//                    onPromoDataSuccess(response.body());
-//                    Log.d(TAG, "onResponse: " + new GsonBuilder().setPrettyPrinting().create().toJson(response));
-//                }
-//                else{
-//                    Log.d(TAG, "onResponse: retrofit failed");
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ResultPojo> call, Throwable t) {
-//
-//            }
-//        });
-        retrofit.create(ApiInterface.class).getPromotions().enqueue(new Callback<List<PromoPojo>>() {
-            @Override
-            public void onResponse(Call<List<PromoPojo>> call, Response<List<PromoPojo>> response) {
-                if(response.isSuccessful()){
-                    Log.d(TAG, "onResponse: " + new GsonBuilder().setPrettyPrinting().create().toJson(response));
-                    onPromoDataSuccess(response.body());
+    public void volleyGetPromotion(final Context context) {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gson = gsonBuilder.create();
+        mRequestQueue = Volley.newRequestQueue(context);
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
+                Request.Method.GET,
+                url,
+                null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        if (response.length() > 0) {
+                            PromoPojo[] promos = gson.fromJson(response.toString(), PromoPojo[].class);
+                            List<PromoPojo> promoList = new ArrayList<>();
+                            for(int i = 0; i < promos.length; i++){
+                                promoList.add(promos[i]);
+                            }
+                            onPromoDataSuccess(promoList);
+                        }
+                        else{
+                            Toast.makeText(context, "Noting returned from the server...", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error){
+                        Log.i(TAG,"Error :" + error.toString());
+                    }
                 }
-                else{
-                    Log.d(TAG, "onResponse: retrofit failed\n" + response.toString());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<PromoPojo>> call, Throwable t) {
-                Log.d(TAG, "onFailure: ");
-            }
-        });
-
+        );
+        mRequestQueue.add(jsonArrayRequest);
     }
 
     @Override

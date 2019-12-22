@@ -4,9 +4,10 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Url;
 
 public interface ApiInterface {
     //https://www.abercrombie.com/anf/nativeapp/qa/codetest/codeTest_exploreData.json
-    @GET("codeTest_exploreData.json")
-    Call<List<PromoPojo>> getPromotions();
+    @GET()
+    Call<List<PromoPojo>> getPromotions(@Url String endpoint);
 }
